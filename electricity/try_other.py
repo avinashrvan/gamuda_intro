@@ -13,15 +13,6 @@ df = pd.read_csv("powerconsumption.csv")
 X = df[["Temperature", "Humidity", "WindSpeed"]]
 y = (df["PowerConsumption_Zone1"] + df["PowerConsumption_Zone2"] + df["PowerConsumption_Zone3"])/3
 
-X = np.array(X)
-a = X.min(axis=0)
-b = X.max(axis=0)
-X = (X-a)/(b-a)
-
-y = np.array(y)
-y = (y - y.min())/(y.max()-y.min())
-
-
 
 
 # Train-test split
@@ -35,18 +26,14 @@ model = RandomForestRegressor(
 )
 model.fit(X_train, y_train)
 
-X_test = np.array(X_test)
-X_test = (X_test - a)/(b-a)
-
 
 # Predictions
 y_pred = model.predict(X_test)
-y_pred = y_pred*(y.max()-y.min()) + y.min()
 
 # Evaluation
 print("MAE:", mean_absolute_error(y_test, y_pred))
 print("RMSE:", mean_squared_error(y_test, y_pred, squared=False))
 
 # Save model
-joblib.dump(model, "power_model_normalized.pkl")
+joblib.dump(model, "power_model.pkl")
 print("Model saved as power_model.pkl")
